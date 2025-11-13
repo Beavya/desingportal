@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <style>
+        .form-field { margin: 15px 0; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Design.pro</h1>
+        <hr>
+        <nav>
+            <a href="/">Главная</a>
+            | <a href="/login/">Вход</a>
+        </nav>
+        <hr>
+    </header>
+
+    <main>
+        <h2>Регистрация пользователя</h2>
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="form-field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+    </main>
+</body>
+</html>
