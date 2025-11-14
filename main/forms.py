@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 import re
 from django.contrib.auth.forms import AuthenticationForm
+from .models import Application
 
 class UserRegisterForm(UserCreationForm):
     last_name = forms.CharField(max_length=100, label='Фамилия')
@@ -62,3 +63,18 @@ class UserRegisterForm(UserCreationForm):
 
 class UserLoginForm(AuthenticationForm):
     pass
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['title', 'description', 'category', 'image']
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            ext = image.name.split('.')[-1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'bmp']:
+                raise forms.ValidationError('Разрешены только jpg, jpeg, png, bmp')
+            if image.size > 2 * 1024 * 1024:
+                raise forms.ValidationError('Размер файла не более 2MB')
+        return image

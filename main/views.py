@@ -1,9 +1,8 @@
 from .models import Application
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
-from .forms import UserRegisterForm
-from .forms import UserLoginForm
-
+from .forms import UserRegisterForm, UserLoginForm, ApplicationForm
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, 'index.html')
@@ -37,3 +36,17 @@ def login_view(request):
     else:
         form = UserLoginForm()
     return render(request, 'login.html', {'form': form})
+
+@login_required
+def create_application(request):
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.user = request.user
+            application.status = 'new'
+            application.save()
+            return redirect('user_applications')
+    else:
+        form = ApplicationForm()
+    return render(request, 'create_application.html', {'form': form})
