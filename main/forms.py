@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 import re
-from django.contrib.auth.forms import AuthenticationForm
 from .models import Application
+
 
 class UserRegisterForm(UserCreationForm):
     last_name = forms.CharField(max_length=100, label='Фамилия')
@@ -61,20 +61,32 @@ class UserRegisterForm(UserCreationForm):
             user.save()
         return user
 
+
 class UserLoginForm(AuthenticationForm):
     pass
 
+
 class ApplicationForm(forms.ModelForm):
+    image = forms.ImageField(
+        required=True,
+        label='Фото помещения или план',
+        error_messages={
+            'invalid_image': 'Файл не является действительным изображением. Поддерживаются только JPG, JPEG, PNG и BMP.'
+        }
+    )
+
     class Meta:
         model = Application
         fields = ['title', 'description', 'category', 'image']
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
-        if image:
-            ext = image.name.split('.')[-1].lower()
-            if ext not in ['jpg', 'jpeg', 'png', 'bmp']:
-                raise forms.ValidationError('Разрешены только jpg, jpeg, png, bmp')
-            if image.size > 2 * 1024 * 1024:
-                raise forms.ValidationError('Размер файла не более 2MB')
+        if not image:
+            return image
+
+        ext = image.name.split('.')[-1].lower()
+        if image.size > 2 * 1024 * 1024 or ext not in {'jpg', 'jpeg', 'png', 'bmp'}:
+            raise forms.ValidationError(
+                "Разрешены только файлы с расширением: JPG, JPEG, PNG или BMP. Размер файла не должен превышать 2 МБ."
+            )
         return image

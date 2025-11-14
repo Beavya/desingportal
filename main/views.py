@@ -37,6 +37,7 @@ def login_view(request):
         form = UserLoginForm()
     return render(request, 'login.html', {'form': form})
 
+
 @login_required
 def create_application(request):
     if request.method == 'POST':
@@ -44,9 +45,9 @@ def create_application(request):
         if form.is_valid():
             application = form.save(commit=False)
             application.user = request.user
-            application.status = 'new'
             application.save()
-            return redirect('user_applications')
+            return redirect('my_applications')
     else:
         form = ApplicationForm()
+
     return render(request, 'create_application.html', {'form': form})

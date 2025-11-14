@@ -28,6 +28,7 @@ class Application(models.Model):
     image = models.ImageField(
         upload_to='applications/',
         verbose_name="Фото помещения или план",
+        blank=True
     )
 
     design_image = models.ImageField(
