@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои заявки</title>
+</head>
+<body>
+    <header>
+        <h1>Design.pro</h1>
+        <hr>
+        <h3> Профиль: {{ user.username }}</h3>
+        <nav>
+            <a href="/">Главная</a>
+            | <a href="/applications/create/">Создать заявку</a>
+            | <a href="/logout/">Выйти</a>
+        </nav>
+        <hr>
+    </header>
+
+    <main>
+        <form method="get" style="margin-bottom: 20px;">
+            <label>Фильтр по статусу:</label>
+            <select name="status" onchange="this.form.submit()">
+                <option value="">Все</option>
+                {% for value, label in STATUS_CHOICES %}
+                    <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        {% if applications %}
+            {% for app in applications %}
+                <div style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                    <h3>{{ app.title }}</h3>
+                    <p><strong>Дата:</strong> {{ app.created_at|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Категория:</strong> {{ app.category.name }}</p>
+                    <p><strong>Статус:</strong>
+                        {% if app.status == 'new' %}
+                            <span>Новая</span>
+                        {% elif app.status == 'in_progress' %}
+                            <span>Принято в работу</span>
+                        {% elif app.status == 'completed' %}
+                            <span>Выполнено</span>
+                        {% endif %}
+                    </p>
+                    <p>{{ app.description|truncatewords:20 }}</p>
+
+                    {% if app.image %}
+                        <p><img src="{{ app.image.url }}" alt="План" style="max-width: 200px; margin-top: 10px;"></p>
+                    {% endif %}
+
+                    {% if app.status == 'new' %}
+                        <a href="{% url 'delete_application' app.pk %}">Удалить</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>У вас пока нет заявок.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

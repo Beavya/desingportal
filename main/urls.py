@@ -9,6 +9,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('login/', views.login_view, name='login'),
     path('applications/create/', views.create_application, name='create_application'),
+    path('my-applications/', views.my_applications, name='my_applications'),
+path('my-applications/delete/<int:pk>/', views.delete_application, name='delete_application'),
 ]
 
 if settings.DEBUG:

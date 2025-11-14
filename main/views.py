@@ -1,5 +1,5 @@
 from .models import Application
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from .forms import UserRegisterForm, UserLoginForm, ApplicationForm
 from django.contrib.auth.decorators import login_required
@@ -51,3 +51,28 @@ def create_application(request):
         form = ApplicationForm()
 
     return render(request, 'create_application.html', {'form': form})
+
+@login_required
+def my_applications(request):
+    applications = Application.objects.filter(user=request.user).order_by('-created_at')
+    status = request.GET.get('status')
+    if status in ['new', 'in_progress', 'completed']:
+        applications = applications.filter(status=status)
+
+    return render(request, 'my_applications.html', {
+        'applications': applications,
+        'current_status': status,
+        'STATUS_CHOICES': Application.STATUS_CHOICES,
+    })
+
+@login_required
+def delete_application(request, pk):
+    app = get_object_or_404(Application, pk=pk, user=request.user)
+    if app.status != 'new':
+        return redirect('my_applications')
+
+    if request.method == 'POST':
+        app.delete()
+        return redirect('my_applications')
+
+    return render(request, 'confirm_delete.html', {'application': app})
