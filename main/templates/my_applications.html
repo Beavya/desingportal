@@ -3,53 +3,56 @@
 {% block title %}Мои заявки{% endblock %}
 
 {% block content %}
-<h2>Мои заявки</h2>
+<div class="main-content">
+    <h2>Мои заявки</h2>
 
-<form method="get">
-    <label>Фильтр по статусу:</label>
-    <select name="status" onchange="this.form.submit()">
-        <option value="">Все</option>
-        <option value="new" {% if current_status == 'new' %}selected{% endif %}>Новая</option>
-        <option value="in_progress" {% if current_status == 'in_progress' %}selected{% endif %}>Принято в работу</option>
-        <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Выполнено</option>
-    </select>
-</form>
+    <!-- Оберни select в form с method="get" -->
+    <form method="get" class="filter-form">
+        <label>Фильтр по статусу:</label>
+        <select name="status" onchange="this.form.submit()">
+            <option value="">Все</option>
+            <option value="new" {% if current_status == 'new' %}selected{% endif %}>Новая</option>
+            <option value="in_progress" {% if current_status == 'in_progress' %}selected{% endif %}>Принято в работу</option>
+            <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Выполнено</option>
+        </select>
+    </form>
 
-{% if applications %}
-    {% for app in applications %}
-        <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
-            <p><strong>Дата:</strong> {{ app.created_at|date:"d.m.Y H:i" }}</p>
-            <h3>{{ app.title }}</h3>
-            <p><strong>Категория:</strong> {{ app.category.name }}</p>
-            <p><strong>Статус:</strong>
-                {% if app.status == 'new' %}Новая
-                {% elif app.status == 'in_progress' %}Принято в работу
-                {% elif app.status == 'completed' %}Выполнено
+    {% if applications %}
+        {% for app in applications %}
+            <div class="application-card">
+                <p><strong>Дата:</strong> {{ app.created_at|date:"d.m.Y H:i" }}</p>
+                <h3>{{ app.title }}</h3>
+                <p><strong>Категория:</strong> {{ app.category.name }}</p>
+                <p><strong>Статус:</strong>
+                    {% if app.status == 'new' %}Новая
+                    {% elif app.status == 'in_progress' %}Принято в работу
+                    {% elif app.status == 'completed' %}Выполнено
+                    {% endif %}
+                </p>
+                <p>{{ app.description|truncatewords:20 }}</p>
+
+                <img src="{{ app.image.url }}" alt="Исходный план" height="100">
+
+                {% if app.design_image %}
+                    <p><strong>Готовый дизайн:</strong></p>
+                    <img src="{{ app.design_image.url }}" alt="Дизайн" height="100">
                 {% endif %}
-            </p>
-            <p>{{ app.description|truncatewords:20 }}</p>
 
-            <img src="{{ app.image.url }}" alt="Исходный план" height="100">
+                {% if app.admin_comment %}
+                    <p><strong>Комментарий:</strong> {{ app.admin_comment }}</p>
+                {% endif %}
 
-            {% if app.design_image %}
-                <p><strong>Готовый дизайн:</strong></p>
-                <img src="{{ app.design_image.url }}" alt="Дизайн" height="100">
-            {% endif %}
+                {% if app.status == 'new' and not user.is_staff %}
+                    <a href="{% url 'delete_application' app.pk %}">Удалить</a>
+                {% endif %}
 
-            {% if app.admin_comment %}
-                <p><strong>Комментарий:</strong> {{ app.admin_comment }}</p>
-            {% endif %}
-
-            {% if app.status == 'new' and not user.is_staff %}
-                <a href="{% url 'delete_application' app.pk %}">Удалить</a>
-            {% endif %}
-
-            {% if user.is_staff and app.status == 'new' %}
-                <a href="{% url 'edit_application' app.pk %}">Изменить статус</a>
-            {% endif %}
-        </div>
-    {% endfor %}
-{% else %}
-    <p>У вас пока нет заявок.</p>
-{% endif %}
+                {% if user.is_staff and app.status == 'new' %}
+                    <a href="{% url 'edit_application' app.pk %}">Изменить статус</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>У вас пока нет заявок.</p>
+    {% endif %}
+</div>
 {% endblock %}

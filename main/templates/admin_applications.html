@@ -3,42 +3,44 @@
 {% block title %}Все заявки{% endblock %}
 
 {% block content %}
-    <h2>Все заявки пользователей</h2>
+    <div class="main-content">
+        <h2>Все заявки</h2>
 
-    {% if applications %}
-        {% for app in applications %}
-            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
-                <p><strong>Дата:</strong> {{ app.created_at|date:"d.m.Y H:i" }}</p>
-                <p><strong>Пользователь:</strong> {{ app.user.username }}</p>
-                <h3>{{ app.title }}</h3>
-                <p><strong>Категория:</strong> {{ app.category.name }}</p>
-                <p><strong>Статус:</strong>
-                    {% if app.status == 'new' %}Новая
-                    {% elif app.status == 'in_progress' %}Принято в работу
-                    {% elif app.status == 'completed' %}Выполнено
+        {% if applications %}
+            {% for app in applications %}
+                <div class="application-card">
+                    <p><strong>Дата:</strong> {{ app.created_at|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Пользователь:</strong> {{ app.user.username }}</p>
+                    <h3>{{ app.title }}</h3>
+                    <p><strong>Категория:</strong> {{ app.category.name }}</p>
+                    <p><strong>Статус:</strong>
+                        {% if app.status == 'new' %}Новая
+                        {% elif app.status == 'in_progress' %}Принято в работу
+                        {% elif app.status == 'completed' %}Выполнено
+                        {% endif %}
+                    </p>
+
+                    <p>{{ app.description|truncatewords:20 }}</p>
+
+                    <p><strong>План:</strong></p>
+                    <img src="{{ app.image.url }}" alt="План" height="100">
+
+                    {% if app.design_image %}
+                        <p><strong>Готовый дизайн:</strong></p>
+                        <img src="{{ app.design_image.url }}" alt="Дизайн" height="100">
                     {% endif %}
-                </p>
 
-                <p>{{ app.description|truncatewords:20 }}</p>
+                    {% if app.admin_comment %}
+                        <p><strong>Комментарий:</strong> {{ app.admin_comment }}</p>
+                    {% endif %}
 
-                <p><strong>План:</strong></p>
-                <img src="{{ app.image.url }}" alt="План" height="100">
-
-                {% if app.design_image %}
-                    <p><strong>Готовый дизайн:</strong></p>
-                    <img src="{{ app.design_image.url }}" alt="Дизайн" height="100">
-                {% endif %}
-
-                {% if app.admin_comment %}
-                    <p><strong>Комментарий:</strong> {{ app.admin_comment }}</p>
-                {% endif %}
-
-                {% if app.status == 'new' %}
-                    <a href="{% url 'edit_application' app.pk %}">Изменить статус</a>
-                {% endif %}
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>Заявок пока нет.</p>
-    {% endif %}
+                    {% if app.status == 'new' %}
+                        <a href="{% url 'edit_application' app.pk %}">Изменить статус</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Заявок пока нет.</p>
+        {% endif %}
+    </div>
 {% endblock %}

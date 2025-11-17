@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Управление категориями{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Управление категориями</h2>
+
+    <!-- Форма добавления -->
+    <form method="POST" class="form-inline">
+        {% csrf_token %}
+        <div class="form-field">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+        <button type="submit" class="submit-btn" style="width: auto">Добавить</button>
+    </form>
+
+    {% if categories %}
+        <h3>Существующие категории ({{ categories.count }})</h3>
+        <ul>
+            {% for cat in categories %}
+                <li class="application-card">
+                    <strong>{{ cat.name }}</strong>
+                    <a href="{% url 'delete_category' cat.pk %}" class="submit-btn" style="width: auto">Удалить</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Категорий пока нет.</p>
+    {% endif %}
+</div>
+{% endblock %}

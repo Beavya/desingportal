@@ -15,6 +15,8 @@ urlpatterns = [
     # ЗАДАНИЕ 3
     path('admin-applications/', views.admin_applications, name='admin_applications'),
     path('admin-applications/edit/<int:pk>/', views.edit_application, name='edit_application'),
+    path('categories/', views.manage_categories, name='manage_categories'),
+    path('categories/delete/<int:pk>/', views.delete_category, name='delete_category'),
 ]
 
 if settings.DEBUG:

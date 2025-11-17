@@ -3,15 +3,20 @@
 {% block title %}Главная{% endblock %}
 
 {% block content %}
+<div class="main-content">
     <h2>Последние выполненные работы</h2>
 
     {% if completed_applications %}
         {% for app in completed_applications %}
-            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+            <div class="application-card">
                 <p><strong>Дата:</strong> {{ app.created_at|date:"d.m.Y" }}</p>
                 <h3>{{ app.title }}</h3>
                 <p><strong>Категория:</strong> {{ app.category.name }}</p>
-                <img src="{{ app.design_image.url }}" alt="Готовый дизайн" height="150">
+                {% if app.design_image %}
+                    <img src="{{ app.design_image.url }}" alt="Готовый дизайн" height="150">
+                {% else %}
+                    <p>Нет изображения дизайна</p>
+                {% endif %}
             </div>
         {% endfor %}
     {% else %}
@@ -19,5 +24,6 @@
     {% endif %}
 
     <hr>
-    <p><strong>Заявок в работе:</strong> {{ in_progress_count }}</p>
+    <p class="status-counter"><strong>Заявок в работе:</strong> {{ in_progress_count }}</p>
+</div>
 {% endblock %}

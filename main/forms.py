@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 import re
-from .models import Application
+from .models import Application, Category
 
 # ЗАДАНИЕ 1
 
@@ -113,3 +113,11 @@ class AdminApplicationForm(forms.ModelForm):
             self.add_error('design_image', "Для статуса «Выполнено» обязателен файл готового дизайна.")
 
         return cleaned_data
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        labels = {
+            'name': 'Название категории'
+        }

@@ -1,14 +1,21 @@
-from .models import Application
+from .models import Application, Category
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
-from .forms import UserRegisterForm, UserLoginForm, ApplicationForm
+from .forms import UserRegisterForm, UserLoginForm, ApplicationForm, CategoryForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 
 # ЗАДАНИЕ 1
 
 def index(request):
-    return render(request, 'index.html')
+    applications_in_progress_count = Application.objects.filter(status='in_progress').count()
+    completed_applications = Application.objects.filter(status='completed').order_by('-created_at')[:4]
+
+    context = {
+        'applications_in_progress_count': applications_in_progress_count,
+        'completed_applications': completed_applications,
+    }
+    return render(request, 'index.html', context)
 
 def register(request):
     if request.method == 'POST':
@@ -61,11 +68,9 @@ def my_applications(request):
     status = request.GET.get('status')
     if status in ['new', 'in_progress', 'completed']:
         applications = applications.filter(status=status)
-
     return render(request, 'my_applications.html', {
         'applications': applications,
         'current_status': status,
-        'STATUS_CHOICES': Application.STATUS_CHOICES,
     })
 
 @login_required
@@ -109,3 +114,29 @@ def edit_application(request, pk):
         'form': form,
         'application': app,
     })
+
+
+@staff_member_required
+def manage_categories(request):
+    categories = Category.objects.all()
+    form = CategoryForm()
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_categories')
+
+    return render(request, 'manage_categories.html', {
+        'categories': categories,
+        'form': form,
+    })
+
+
+@staff_member_required
+def delete_category(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    if request.method == 'POST':
+        category.delete()
+        return redirect('manage_categories')
+    return render(request, 'confirm_delete_category.html', {'category': category})

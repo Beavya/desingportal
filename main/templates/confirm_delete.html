@@ -3,12 +3,14 @@
 {% block title %}Подтверждение удаления{% endblock %}
 
 {% block content %}
+<div class="form-card">
     <h2>Удалить заявку?</h2>
     <p>Вы уверены, что хотите удалить заявку: <strong>{{ application.title }}</strong>?</p>
 
     <form method="post">
         {% csrf_token %}
-        <button type="submit">Да, удалить</button>
-        <button type="button" onclick="window.location.href='{% url 'my_applications' %}'">Отмена</button>
+        <button type="submit" class="submit-btn">Да, удалить</button>
+        <a  class="cancel-btn" href="{% url 'my_applications' %}">Отмена</a>
     </form>
+</div>
 {% endblock %}

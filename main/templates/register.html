@@ -3,21 +3,35 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
-<h2>Регистрация пользователя</h2>
+<div class="form-card">
+    <h2>Регистрация пользователя</h2>
 
-<form method="POST">
-    {% csrf_token %}
+    <form method="POST">
+        {% csrf_token %}
 
-    {% for field in form %}
-        <div style="margin: 15px 0;">
-            {{ field.label_tag }}
-            {{ field }}
-            {% if field.errors %}
-                <div style="color: red;">{{ field.errors.0 }}</div>
+        {% for field in form %}
+            {% if field.name == 'agree' %}
+                <div class="form-field">
+                    <label class="checkbox-label">
+                        {{ field }}
+                        {{ field.label_tag }}
+                    </label>
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="form-field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
             {% endif %}
-        </div>
-    {% endfor %}
+        {% endfor %}
 
-    <button type="submit">Зарегистрироваться</button>
-</form>
+        <button type="submit" class="submit-btn">Зарегистрироваться</button>
+    </form>
+</div>
 {% endblock %}

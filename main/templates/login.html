@@ -1,31 +1,28 @@
 {% extends "base_generic.html" %}
 
-{% block title %}Вход{% endblock %}
-
 {% block content %}
+<div class="form-card">
     <h2>Вход в систему</h2>
+
+    {% if form.non_field_errors %}
+        <div class="error" style="margin-bottom: 16px; text-align: center;">
+            {{ form.non_field_errors.0 }}
+        </div>
+    {% endif %}
 
     <form method="POST">
         {% csrf_token %}
-
-        {% if form.non_field_errors %}
-            <div style="color: red; margin-bottom: 15px;">
-                {% for error in form.non_field_errors %}
-                    {{ error }}
-                {% endfor %}
-            </div>
-        {% endif %}
-
         {% for field in form %}
-            <div style="margin: 15px 0;">
+            <div class="form-field">
                 {{ field.label_tag }}
                 {{ field }}
                 {% if field.errors %}
-                    <div style="color: red;">{{ field.errors.0 }}</div>
+                    <div class="error">{{ field.errors.0 }}</div>
                 {% endif %}
+
             </div>
         {% endfor %}
-
-        <button type="submit">Войти</button>
+        <button type="submit" class="submit-btn">Войти</button>
     </form>
+</div>
 {% endblock %}

@@ -1,24 +1,21 @@
-<!-- templates/create_application.html -->
 {% extends "base_generic.html" %}
 
-{% block title %}Создание заявки{% endblock %}
-
 {% block content %}
+<div class="form-card">
     <h2>Создание заявки</h2>
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
-            <div class="form-field" style="margin: 15px 0;">
+            <div class="form-field">
                 {{ field.label_tag }}
                 {{ field }}
                 {% if field.errors %}
-                    {% for error in field.errors %}
-                        <div style="color: red;">{{ error }}</div>
-                    {% endfor %}
+                    <div class="error">{{ field.errors.0 }}</div>
                 {% endif %}
             </div>
         {% endfor %}
-        <button type="submit">Создать заявку</button>
+        <button type="submit" class="submit-btn">Создать заявку</button>
     </form>
+</div>
 {% endblock %}
