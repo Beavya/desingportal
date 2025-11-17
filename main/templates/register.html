@@ -1,40 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Регистрация</title>
-    <style>
-        .form-field { margin: 15px 0; }
-        .error { color: red; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Design.pro</h1>
-        <hr>
-        <nav>
-            <a href="/">Главная</a>
-            | <a href="/login/">Вход</a>
-        </nav>
-        <hr>
-    </header>
+{% extends "base_generic.html" %}
 
-    <main>
-        <h2>Регистрация пользователя</h2>
-        <form method="POST">
-            {% csrf_token %}
+{% block title %}Регистрация{% endblock %}
 
-            {% for field in form %}
-                <div class="form-field">
-                    {{ field.label_tag }}
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="error">{{ field.errors.0 }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+{% block content %}
+<h2>Регистрация пользователя</h2>
 
-            <button type="submit">Зарегистрироваться</button>
-        </form>
-    </main>
-</body>
-</html>
+<form method="POST">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div style="margin: 15px 0;">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <div style="color: red;">{{ field.errors.0 }}</div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Зарегистрироваться</button>
+</form>
+{% endblock %}

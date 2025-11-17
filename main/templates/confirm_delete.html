@@ -1,31 +1,14 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <title>Подтверждение удаления — Design.pro</title>
-</head>
-<body>
-    <header>
-        <h1>Design.pro</h1>
-        <hr>
-        <h3>Профиль: {{ user.username }}</h3>
-        <nav>
-            <a href="/applications/create/">Создать заявку</a>
-            | <a href="{% url 'my_applications' %}">Мои заявки</a>
-            | <a href="/logout/">Выйти</a>
-        </nav>
-        <hr>
-    </header>
+{% extends "base_generic.html" %}
 
-    <main>
-        <h2>Удалить заявку?</h2>
-        <p>Вы уверены, что хотите удалить заявку: <strong>{{ application.title }}</strong>?</p>
+{% block title %}Подтверждение удаления{% endblock %}
 
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit">Да, удалить</button>
-            <button type="button" onclick="window.location.href='{% url 'my_applications' %}'">Отмена</button>
-        </form>
-    </main>
-</body>
-</html>
+{% block content %}
+    <h2>Удалить заявку?</h2>
+    <p>Вы уверены, что хотите удалить заявку: <strong>{{ application.title }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Да, удалить</button>
+        <button type="button" onclick="window.location.href='{% url 'my_applications' %}'">Отмена</button>
+    </form>
+{% endblock %}

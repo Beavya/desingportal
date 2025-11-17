@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Design.pro{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>Design.pro</h1>
+    <hr>
+    {% if user.is_authenticated %}
+        <p>Профиль: {{ user.username }}</p>
+        <nav>
+            <a href="{% url 'index' %}">Главная</a>
+            | <a href="{% url 'create_application' %}">Создать заявку</a>
+            | <a href="{% url 'my_applications' %}">Мои заявки</a>
+            {% if user.is_staff %}
+                | <a href="{% url 'admin_applications' %}">Все заявки</a>
+            {% endif %}
+            | <a href="{% url 'logout' %}">Выйти</a>
+        </nav>
+    {% else %}
+        <nav>
+            <a href="{% url 'index' %}">Главная</a>
+            | <a href="{% url 'login' %}">Вход</a>
+            | <a href="{% url 'register' %}">Регистрация</a>
+        </nav>
+    {% endif %}
+    <hr>
+</header>
+
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer>
+    <hr>
+    <p>&copy; 2025 Design.pro - Портал дизайна интерьеров</p>
+</footer>
+
+</body>
+</html>

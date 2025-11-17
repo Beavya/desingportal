@@ -1,48 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Вход</title>
-    <style>
-        .form-field { margin: 15px 0; }
-        .error { color: red; }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Design.pro</h1>
-        <hr>
-        <nav>
-            <a href="/">Главная</a>
-            | <a href="/register/">Регистрация</a>
-        </nav>
-        <hr>
-    </header>
+{% extends "base_generic.html" %}
 
-    <main>
-        <h2>Вход в систему</h2>
-        <form method="POST">
-            {% csrf_token %}
+{% block title %}Вход{% endblock %}
 
-            {% if form.non_field_errors %}
-                <div class="error" style="margin-bottom: 15px;">
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
-                </div>
-            {% endif %}
+{% block content %}
+    <h2>Вход в систему</h2>
 
-            {% for field in form %}
-                <div class="form-field">
-                    {{ field.label_tag }}
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="error">{{ field.errors.0 }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+    <form method="POST">
+        {% csrf_token %}
 
-            <button type="submit">Войти</button>
-        </form>
-    </main>
-</body>
-</html>
+        {% if form.non_field_errors %}
+            <div style="color: red; margin-bottom: 15px;">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div style="margin: 15px 0;">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div style="color: red;">{{ field.errors.0 }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit">Войти</button>
+    </form>
+{% endblock %}

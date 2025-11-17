@@ -3,10 +3,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from .forms import UserRegisterForm, UserLoginForm, ApplicationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+
+# ЗАДАНИЕ 1
 
 def index(request):
     return render(request, 'index.html')
-
 
 def register(request):
     if request.method == 'POST':
@@ -18,10 +20,6 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
-
-def logout_view(request):
-    logout(request)
-    return redirect('index')
 
 def login_view(request):
     if request.method == 'POST':
@@ -37,6 +35,11 @@ def login_view(request):
         form = UserLoginForm()
     return render(request, 'login.html', {'form': form})
 
+# ЗАДАНИЕ 2
+
+def logout_view(request):
+    logout(request)
+    return redirect('index')
 
 @login_required
 def create_application(request):
@@ -76,3 +79,33 @@ def delete_application(request, pk):
         return redirect('my_applications')
 
     return render(request, 'confirm_delete.html', {'application': app})
+
+
+# ЗАДАНИЕ 3
+
+@staff_member_required
+def admin_applications(request):
+    applications = Application.objects.all().order_by('-created_at')
+    return render(request, 'admin_applications.html', {
+        'applications': applications,
+    })
+
+from django.contrib.admin.views.decorators import staff_member_required
+from .forms import AdminApplicationForm
+
+@staff_member_required
+def edit_application(request, pk):
+    app = get_object_or_404(Application, pk=pk)
+
+    if request.method == 'POST':
+        form = AdminApplicationForm(request.POST, request.FILES, instance=app)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_applications')
+    else:
+        form = AdminApplicationForm(instance=app)
+
+    return render(request, 'edit_application.html', {
+        'form': form,
+        'application': app,
+    })

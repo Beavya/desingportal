@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 import re
 from .models import Application
 
+# ЗАДАНИЕ 1
 
 class UserRegisterForm(UserCreationForm):
     last_name = forms.CharField(max_length=100, label='Фамилия')
@@ -65,6 +66,7 @@ class UserRegisterForm(UserCreationForm):
 class UserLoginForm(AuthenticationForm):
     pass
 
+# ЗАДАНИЕ 2
 
 class ApplicationForm(forms.ModelForm):
     image = forms.ImageField(
@@ -90,3 +92,24 @@ class ApplicationForm(forms.ModelForm):
                 "Разрешены только файлы с расширением: JPG, JPEG, PNG или BMP. Размер файла не должен превышать 2 МБ."
             )
         return image
+
+# ЗАДАНИЕ 3
+
+class AdminApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['status', 'admin_comment', 'design_image']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        status = cleaned_data.get('status')
+        admin_comment = cleaned_data.get('admin_comment')
+        design_image = cleaned_data.get('design_image')
+
+        if status == 'in_progress' and not admin_comment:
+            self.add_error('admin_comment', "Для статуса «Принято в работу» обязателен комментарий.")
+
+        if status == 'completed' and not design_image:
+            self.add_error('design_image', "Для статуса «Выполнено» обязателен файл готового дизайна.")
+
+        return cleaned_data

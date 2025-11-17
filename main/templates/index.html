@@ -1,40 +1,23 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Главная</title>
-</head>
-<body>
-    <header>
-        <h1>Design.pro</h1>
-        <hr>
-        {% if user.is_authenticated %}
-            <h3> Профиль: {{ user.username }}</h3>
-        {% endif %}
-        <nav>
-            {% if user.is_authenticated %}
-                <a href="/applications/create/">Создать заявку</a>
-                | <a href="my-applications/">Мои заявки</a>
-                | <a href="/logout/">Выйти</a>
-            {% else %}
-                <a href="/login/">Вход</a>
-                | <a href="/register/">Регистрация</a>
-            {% endif %}
-        </nav>
-        <hr>
-    </header>
+{% extends "base_generic.html" %}
 
-    <main>
-        <h2>Добро пожаловать в дизайн-студию Design.pro</h2>
-        <p>Загружайте планы помещений и получайте профессиональные дизайн-проекты.</p>
-        <hr>
-        <div>
-            <h3>Заявок в работе:</h3>
-        </div>
+{% block title %}Главная{% endblock %}
 
-        <div>
-            <h3>Последние выполненные работы:</h3>
-        </div>
-    </main>
-</body>
-</html>
+{% block content %}
+    <h2>Последние выполненные работы</h2>
+
+    {% if completed_applications %}
+        {% for app in completed_applications %}
+            <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+                <p><strong>Дата:</strong> {{ app.created_at|date:"d.m.Y" }}</p>
+                <h3>{{ app.title }}</h3>
+                <p><strong>Категория:</strong> {{ app.category.name }}</p>
+                <img src="{{ app.design_image.url }}" alt="Готовый дизайн" height="150">
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Нет выполненных работ.</p>
+    {% endif %}
+
+    <hr>
+    <p><strong>Заявок в работе:</strong> {{ in_progress_count }}</p>
+{% endblock %}
