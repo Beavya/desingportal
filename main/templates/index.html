@@ -1,6 +1,6 @@
 {% extends "base_generic.html" %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}Главная — Design.pro{% endblock %}
 
 {% block content %}
 <div class="main-content">
@@ -13,9 +13,7 @@
                 <h3>{{ app.title }}</h3>
                 <p><strong>Категория:</strong> {{ app.category.name }}</p>
                 {% if app.design_image %}
-                    <img src="{{ app.design_image.url }}" alt="Готовый дизайн" height="150">
-                {% else %}
-                    <p>Нет изображения дизайна</p>
+                    <img src="{{ app.design_image.url }}" alt="Готовый дизайн" height="180">
                 {% endif %}
             </div>
         {% endfor %}
@@ -24,6 +22,8 @@
     {% endif %}
 
     <hr>
-    <p class="status-counter"><strong>Заявок в работе:</strong> {{ in_progress_count }}</p>
+    <p class="status-counter">
+        <strong>Заявок в работе:</strong> {{ in_progress_count }}
+    </p>
 </div>
 {% endblock %}

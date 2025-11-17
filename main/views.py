@@ -8,14 +8,16 @@ from django.contrib.admin.views.decorators import staff_member_required
 # ЗАДАНИЕ 1
 
 def index(request):
-    applications_in_progress_count = Application.objects.filter(status='in_progress').count()
-    completed_applications = Application.objects.filter(status='completed').order_by('-created_at')[:4]
+    completed_applications = Application.objects.filter(
+        status='completed'
+    ).order_by('-created_at')[:4]
 
-    context = {
-        'applications_in_progress_count': applications_in_progress_count,
+    in_progress_count = Application.objects.filter(status='in_progress').count()
+
+    return render(request, 'index.html', {
         'completed_applications': completed_applications,
-    }
-    return render(request, 'index.html', context)
+        'in_progress_count': in_progress_count,
+    })
 
 def register(request):
     if request.method == 'POST':
